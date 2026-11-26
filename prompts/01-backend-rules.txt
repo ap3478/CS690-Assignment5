@@ -1,0 +1,10 @@
+Tool: Claude (claude.ai, cloud agent session), model Claude Opus 5.5, 2026-11-25
+Change: AGENTS.md, "Backend rules" section (Part 1)
+
+Prompts typed, word for word, in order:
+
+1. ignore .gitignore for now and move forward. I will commit later
+
+2. (Claude asked how to proceed with Part 1: I write the rules and Claude reviews,
+   or Claude drafts the Part 2 agent files on a branch or on main. My answer:)
+   draft the rules for me and I will review before committing
