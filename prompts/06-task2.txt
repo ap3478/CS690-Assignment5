@@ -1,0 +1,18 @@
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-25
+Change: Part 6, Task 2 of docs/plan.md: app/models.py and app/service.py, plus decision
+D18 (docs/spec.md section 7)
+
+Prompts typed into Claude Code, word for word, in order.
+[Check against what you actually typed.]
+
+----- 1: the task (HANDOUT Part 6) -----
+Do Task 2 of docs/plan.md and nothing else. Follow AGENTS.md. When you finish,
+run python tools/check_layers.py and python -m pytest tests/acceptance, and
+report the results. Do not edit any test.
+
+----- 2: after the agent asked about "\ud800" and I added D18 to the spec -----
+I decided D18 in docs/spec.md section 7: a string field containing an unpaired
+surrogate gives 422 invalid_request under R3. Implement only that in app/service.py,
+checking all four string fields during R3 so nothing reaches the repository. Change
+nothing else. Then run python tools/check_layers.py and python -m pytest
+tests/acceptance, and report the results.

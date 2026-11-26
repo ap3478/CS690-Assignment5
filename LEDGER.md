@@ -154,3 +154,33 @@ evidence:  R1, R2, R7, R8, R10; D13, D14, D17; docs/plan.md Task 1; AGENTS.md Ba
 risk:      delete_booking and list_bookings raise OverflowError for integers beyond
            SQLite's 64-bit range; the plan makes the service filter those first (Task 2),
            so this must be checked there. No acceptance test can run until Task 3.
+
+## Entry 7
+artifact:  commit cd027ca (docs/spec.md section 7, decision D18) and commit a7950b0,
+           app/models.py and app/service.py (Part 6, Task 2 of docs/plan.md)
+tool:      Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-25;
+           review by Claude (claude.ai, Claude Opus 5.5)
+prompts:   the HANDOUT Part 6 task prompt for Task 2, then a prompt to implement D18;
+           prompts/06-task2.txt
+review:    the agent stopped and asked about a name sent as the JSON escape "\ud800" (an
+           unpaired surrogate): it is valid JSON and passes R3 to R6, but SQLite cannot
+           store it, so it would have become a 500. Of invalid_request (R3), invalid_name
+           (R4) and leaving it, I chose invalid_request: it matches D9 (a body that is not
+           valid UTF-8) and does not contradict D12 (any characters allowed in a name).
+           I wrote D18 into the spec and committed it before the code. The agent also
+           handled integers too long to convert, which the plan did not spell out: a huge
+           room_id is room_not_found and a huge booking id is booking_not_found, and
+           neither reaches SQLite (the risk left by entry 6). Read against the plan: R3
+           to R7 checked by hand in R9 order with re.fullmatch; room ids compared with
+           repo.list_rooms(); bool and 1.0 rejected (D1); NaN rejected (D8); nothing saved
+           before the last check. Minor: the invalid_request message repeats the page's
+           own sentence ("The request was not valid.") when the page shows both; left for
+           the Part 7 review. [Add what you read yourself.]
+checks:    python tools/check_layers.py: FAILED only on L4 (main.py, routes.py missing), as
+           the plan expects. python -m pytest tests/acceptance: 9 failed, 238 errors,
+           0 passed (No module named 'app.main'). Claude's smoke test of the committed
+           service: R3, R4, R5, R6 and R7 cases, the R9 order cases, "\ud800", NaN, a
+           trailing newline in dates and ids, 01 and huge room ids, delete ids abc, -1,
+           30 and 5000 digits: every result as the spec and D1 to D18 say.
+evidence:  R2 to R9; D1, D2, D4, D5, D7, D8, D9, D13, D18; docs/plan.md Task 2
+risk:      no HTTP test runs until Task 3; the service was tested only by direct calls.

@@ -1,0 +1,9 @@
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-25
+Change: Part 6, Task 3 of docs/plan.md: app/routes.py and app/main.py
+
+Prompt typed into Claude Code, word for word:
+[Check against what you actually typed, and add any follow-up prompts below it.]
+
+Do Task 3 of docs/plan.md and nothing else. Follow AGENTS.md. When you finish,
+run python tools/check_layers.py and python -m pytest tests/acceptance, and
+report the results. Do not edit any test.
