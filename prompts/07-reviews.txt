@@ -4,12 +4,19 @@ Change: Part 7, evidence/review.md and evidence/contract-check.md, then one fix 
 accepted finding
 
 Prompts typed into Claude Code, word for word, in order.
-[Check against what you actually typed, and add each "Fix finding <n>" prompt below.]
 
 ----- 1: run both reviews (HANDOUT Part 7, step 1) -----
 Run the reviewer subagent on the files in app/ and the contract-checker subagent,
 at the same time. Then save each report, exactly as it was returned, in
 evidence/review.md and evidence/contract-check.md. Do not fix anything yet.
 
------ 2 onward: one per accepted finding -----
-[for example: Fix finding 3 from evidence/review.md and nothing else.]
+----- 2: fix finding 2 -----
+Fix finding 2 from evidence/review.md and nothing else.
+
+----- 3: fix finding 3 -----
+Fix finding 3 from evidence/review.md and nothing else.
+
+----- 4: fix finding 4 -----
+Fix finding 4 from evidence/review.md and nothing else.
+
+(The three fixes were committed together in a057cd9.)

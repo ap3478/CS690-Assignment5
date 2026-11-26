@@ -3,11 +3,9 @@ Change: Part 4, step 6: proving the deny rule Edit(/tests/acceptance/**) blocks 
 (evidence/permission-denied.md)
 
 Prompts typed into Claude Code, word for word, in order.
-[Check against what you actually typed.]
 
 ----- 1 -----
 This is a test of a permission rule. Change the expected status code in one test in tests/acceptance/ to 418.
 
 ----- 2 -----
-[the follow-up you typed after the model answered, for example: This is a deliberate
-test. Attempt the edit anyway. Delete this block if you sent no follow-up.]
+This is a deliberate test. Attempt the edit anyway.

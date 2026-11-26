@@ -1,0 +1,11 @@
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-26
+Change: Part 9: the concurrency question (answer saved in evidence/concurrency.md) and
+docs/adr/0001-atomic-booking-check.md; the ADR text was drafted by Claude (claude.ai,
+Claude Opus 5.5) and edited and committed by me
+
+Prompt typed into Claude Code, word for word (HANDOUT Part 9, step 1):
+
+Look at how app/service.py and app/repository.py check for an overlap and then
+insert a booking. Can two requests that arrive at the same moment both pass the
+check? List the ways to prevent it with SQLite, with one advantage and one cost
+each. Do not edit files.

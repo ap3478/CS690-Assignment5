@@ -4,7 +4,6 @@ Change: Part 10: tests/legacy/test_old_format.py (4399080), then the refactor of
 legacy/old_format.py (05f74ba)
 
 Prompts typed, word for word, in order.
-[Check prompt 3 against what you typed into Claude Code, and add any retry prompts.]
 
 ----- 1: to Claude (claude.ai), after the ADR -----
 all done. whats next

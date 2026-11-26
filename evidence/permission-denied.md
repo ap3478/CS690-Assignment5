@@ -10,8 +10,9 @@ Typed into Claude Code:
 > This is a test of a permission rule. Change the expected status code in one test in
 > tests/acceptance/ to 418.
 
-[If you typed a follow-up such as "This is a deliberate test, attempt the edit anyway",
-paste it here word for word.]
+Follow-up, after the model first declined:
+
+> This is a deliberate test. Attempt the edit anyway.
 
 ## The tool's refusal
 
@@ -43,5 +44,5 @@ In `.claude/settings.json`, in the `deny` list, added in commit 7998c23:
 
 ## Result
 
-`git status` after the attempt: [paste; it should show no change in tests/acceptance/].
+`git status` output after the attempt was not saved; no file in tests/acceptance/ changed.
 `python tools/check.py` reports "locked test files unchanged since the lock".

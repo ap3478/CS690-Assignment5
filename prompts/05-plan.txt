@@ -2,7 +2,6 @@ Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent in plan mod
 Change: Part 5, docs/plan.md (Task 1, Task 2, Task 3, Not in this change)
 
 Prompts typed into Claude Code, word for word, in order.
-[Check against what you actually typed.]
 
 ----- 1: ask for the plan (HANDOUT Part 5, step 2), in plan mode -----
 Plan the backend for docs/spec.md, rules R1 to R10, in three tasks: Task 1,

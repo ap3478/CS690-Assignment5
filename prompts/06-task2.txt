@@ -3,7 +3,6 @@ Change: Part 6, Task 2 of docs/plan.md: app/models.py and app/service.py, plus d
 D18 (docs/spec.md section 7)
 
 Prompts typed into Claude Code, word for word, in order.
-[Check against what you actually typed.]
 
 ----- 1: the task (HANDOUT Part 6) -----
 Do Task 2 of docs/plan.md and nothing else. Follow AGENTS.md. When you finish,
