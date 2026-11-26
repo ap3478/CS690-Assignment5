@@ -18,7 +18,7 @@ another team. The backend in `app/` is built to match `docs/spec.md`.
 
 ## Backend rules
 
-Layers: `app/routes.py` handles HTTP only (parse the request, call the service,
+-Layers: `app/routes.py` handles HTTP only (parse the request, call the service,
   turn results and errors into responses). `app/service.py` enforces every rule in
   spec section 5. `app/repository.py` is the only file that contains SQL or imports
   `sqlite3`. `app/models.py` holds the request and booking shapes. Routes call the

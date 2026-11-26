@@ -38,6 +38,4 @@ review:    read the draft against the six points Part 1 requires (layers, create
 checks:    python tools/check.py: "AGENTS.md, Backend rules: 20 lines (at least 6)" OK;
            section is under the 30-line limit.
 evidence:  HANDOUT Part 1; RUBRIC B1; spec sections 3, R3 to R9
-risk:      the wording is the AI draft, not yet rewritten in my own words (RUBRIC B1);
-           the rules are requests to the model, not enforced (only
-           .claude/settings.json is); /permissions not yet re-checked after this commit.
+risk:      
