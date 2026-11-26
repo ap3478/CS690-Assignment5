@@ -1,4 +1,4 @@
-Tool: Claude Code [version], main agent, 2026-11-25
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-25
 Change: Part 6, Task 1 of docs/plan.md: app/repository.py
 
 Prompt typed into Claude Code, word for word:

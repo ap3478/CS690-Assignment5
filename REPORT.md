@@ -1,7 +1,7 @@
 # Assignment 5 report
 
 Name: Aditya P
-Agent tool and version (Claude Code or Antigravity CLI): Claude Code [version: run `claude --version`]; some steps were done with Claude (claude.ai, Claude Opus 5.5), as the ledger records
+Agent tool and version (Claude Code or Antigravity CLI): Claude Code, model Claude Opus 5.5 (claude-opus-5-5); some steps were done with Claude (claude.ai, Claude Opus 5.5), as the ledger records
 
 Answer each question in two to five sentences, below the question, unless it asks for a
 table. Point to commits, files, tests or rule IDs where you can.

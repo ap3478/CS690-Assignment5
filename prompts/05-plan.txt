@@ -1,4 +1,4 @@
-Tool: Claude Code [version], main agent in plan mode, 2026-11-25
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent in plan mode, 2026-11-25
 Change: Part 5, docs/plan.md (Task 1, Task 2, Task 3, Not in this change)
 
 Prompts typed into Claude Code, word for word, in order.

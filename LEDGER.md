@@ -107,7 +107,7 @@ risk:      the review is by reading, against no backend; a test can still be wro
 ## Entry 5
 artifact:  commits 7c424ac (tests/acceptance/, 247 tests for R1 to R10) and 7998c23 (deny rule
            Edit(/tests/acceptance/**) in .claude/settings.json), tag a5-tests-locked on 7998c23
-tool:      Claude Code [version], test-writer subagent, 2026-11-25; review by Claude
+tool:      Claude Code with Claude Opus 5.5 (claude-opus-5-5), test-writer subagent, 2026-11-25; review by Claude
            (claude.ai, Claude Opus 5.5), see entry 4
 prompts:   the HANDOUT Part 4 prompt, the fix list from the review, and a follow-up for the
            fixes it missed; prompts/04-tests.txt
@@ -129,7 +129,7 @@ risk:      tests r9 r3_before_r5 and r3_before_r6 depend on how a backend treats
 
 ## Entry 6
 artifact:  commit b227636, app/repository.py (Part 6, Task 1 of docs/plan.md)
-tool:      Claude Code [version], main agent, 2026-11-25; review by Claude (claude.ai,
+tool:      Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-25; review by Claude (claude.ai,
            Claude Opus 5.5)
 prompts:   the HANDOUT Part 6 task prompt for Task 1; prompts/06-task1.txt
 review:    the agent wrote one file and touched nothing else (git status: only

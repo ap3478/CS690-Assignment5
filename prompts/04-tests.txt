@@ -1,4 +1,4 @@
-Tool: Claude Code [version], main agent with the test-writer subagent, 2026-11-25
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent with the test-writer subagent, 2026-11-25
 Change: Part 4, acceptance tests in tests/acceptance/, written and fixed before the lock
 
 Prompts typed into Claude Code, word for word, in order.

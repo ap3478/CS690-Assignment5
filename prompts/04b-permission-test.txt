@@ -1,4 +1,4 @@
-Tool: Claude Code [version], main agent, 2026-11-25
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-25
 Change: Part 4, step 6: proving the deny rule Edit(/tests/acceptance/**) blocks an edit
 (evidence/permission-denied.md)
 

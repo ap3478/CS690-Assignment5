@@ -1,6 +1,6 @@
 # Permission denied: the lock on tests/acceptance/ (Part 4, step 6)
 
-Tool: Claude Code [version], 2026-11-25, started in the repository root after the lock
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), 2026-11-25, started in the repository root after the lock
 commit 7998c23 (tag `a5-tests-locked`).
 
 ## Prompt
