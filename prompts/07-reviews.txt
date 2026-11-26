@@ -1,0 +1,15 @@
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent with the reviewer and
+contract-checker subagents, 2026-11-25
+Change: Part 7, evidence/review.md and evidence/contract-check.md, then one fix per
+accepted finding
+
+Prompts typed into Claude Code, word for word, in order.
+[Check against what you actually typed, and add each "Fix finding <n>" prompt below.]
+
+----- 1: run both reviews (HANDOUT Part 7, step 1) -----
+Run the reviewer subagent on the files in app/ and the contract-checker subagent,
+at the same time. Then save each report, exactly as it was returned, in
+evidence/review.md and evidence/contract-check.md. Do not fix anything yet.
+
+----- 2 onward: one per accepted finding -----
+[for example: Fix finding 3 from evidence/review.md and nothing else.]
