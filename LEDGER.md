@@ -50,7 +50,7 @@ review:    Claude listed 22 questions touching R2, R3, R4, R6, R7, R8, R9, R10 a
            define) goes under "Proposed, not built", not a decision.
            (Update when section 7 is written: which questions the spec answers and
            where, which became D1, D2, ..., and which I rejected.)
-checks:    confirmed no files changed (git status). (Update with python tools/check.py
+checks:    none run yet; Claude made no file edits while answering. (Update with python tools/check.py
            decision count after section 7 is written.)
 evidence:  HANDOUT Part 3; RUBRIC D3b; spec section 7; rules R2 to R10
 risk:      decisions not yet written; the question list may miss open questions that
