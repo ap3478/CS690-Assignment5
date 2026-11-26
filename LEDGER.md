@@ -184,3 +184,32 @@ checks:    python tools/check_layers.py: FAILED only on L4 (main.py, routes.py m
            30 and 5000 digits: every result as the spec and D1 to D18 say.
 evidence:  R2 to R9; D1, D2, D4, D5, D7, D8, D9, D13, D18; docs/plan.md Task 2
 risk:      no HTTP test runs until Task 3; the service was tested only by direct calls.
+
+## Entry 8
+artifact:  commit ee4d21d, app/routes.py and app/main.py (Part 6, Task 3 of docs/plan.md);
+           commit 67c6e93, evidence/page.png
+tool:      Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-25;
+           review by Claude (claude.ai, Claude Opus 5.5)
+prompts:   the HANDOUT Part 6 task prompt for Task 3; prompts/06-task3.txt
+review:    the agent wrote the two files and touched nothing else. Read against the plan:
+           routes import the service, never the repository (L3); the POST body is read as
+           raw bytes and query and path values as strings, so FastAPI never coerces them
+           (D1, D2); repeated query parameters use the last value (D5); a ServiceError
+           becomes exactly {"error", "message"} (R9); FastAPI's own 422s get the R9 body,
+           and unknown paths and wrong methods keep FastAPI's defaults (section 7,
+           "Proposed, not built"); /, /app.js and /styles.css are served from a path built
+           from __file__. The agent added run_in_threadpool so blocking database calls do
+           not stall other requests; accepted, it changes no behavior. Noted for the Part 7
+           review: FastAPI also serves /docs, /redoc and /openapi.json by default, which
+           section 4 does not list. On the page I booked Quiet Room A 09:00 to 10:00, tried
+           09:00 to 09:30 in the same room and got the overlap message, and cancelled a
+           booking (screenshot evidence/page.png). [Add what you read yourself.]
+checks:    python tools/check_layers.py: "Layer check passed: L1 to L5 hold."
+           python -m pytest: 247 passed. python tools/check.py: every check for Parts 1
+           to 6 OK, including "3 commits change app/ between the lock and the R11 code".
+           The agent also checked: page files served as text/html, text/javascript and
+           text/css; room_id=1%0A and DELETE /api/bookings/1%0A give invalid_request;
+           16 simultaneous identical bookings gave one 201 and fifteen 409 overlap.
+evidence:  R1 to R10; D1, D2, D5, D13, D16; docs/plan.md Task 3; evidence/page.png
+risk:      the tests run through TestClient, not a real server with several workers;
+           /docs, /redoc and /openapi.json are endpoints the spec does not list.
