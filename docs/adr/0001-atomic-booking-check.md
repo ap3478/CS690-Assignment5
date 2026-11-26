@@ -32,4 +32,32 @@ as one step, so exactly one of two such requests succeeds and the other gets 409
    Advantage: the database enforces the rule even for writes that bypass the
    application. Cost: a business rule moves into SQL, R11's case-folded name
    comparison does not fit in SQLite's ASCII-only `lower()`, and the error must be
-   mapped back to `overlap` or
+   mapped back to `overlap` or  `daily_limit`.
+4. A slots table with one row per room, date and 30-minute slot, and a UNIQUE
+   constraint. Advantage: the database rejects double bookings by itself. Cost: a
+   larger schema, many rows per booking, cancelling must delete every slot, and it
+   does not cover R11 at all.
+
+## Decision
+
+Option 1, built in commit b227636 (Task 1) and extended for R11 in 767023f.
+`Repository.create_booking_if_free` does the overlap check, then the daily-limit
+count, then the insert, inside one `BEGIN IMMEDIATE` transaction. The service supplies
+the policy (how names are compared and the limit of two) and turns the result into the
+`overlap` or `daily_limit` error. It is the only option that covers both R7 and R11,
+holds across processes, and adds no package or extra table.
+
+## Consequences
+
+- Easier: the rule holds under concurrent requests. In a smoke test, 20 threads booking
+  the same slot produced exactly one booking. Any process that writes through
+  `Repository` is covered.
+- Harder: writes are serialized. A request waits up to 30 seconds for the lock
+  (`timeout` set in commit a057cd9, review finding 2). If it still cannot get the lock,
+  the request fails with a plain 500, which the spec does not define (R11 review,
+  finding 9). The overlap and daily-limit logic sits in `repository.py`, which a
+  reviewer flagged against the Backend rule that the service enforces every rule
+  (R11 review, finding 7).
+- Watch: any new rule that depends on existing bookings must be checked inside this
+  same transaction, or the race comes back. No automated acceptance test covers this
+  race, so a change to `create_booking_if_free` needs a concurrency check by hand.
