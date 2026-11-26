@@ -179,6 +179,7 @@ your reason; it is not built in this assignment.
 - D15. (R9, Q19) message is a short, plain-English sentence for the person using the page, and never contains stack traces, SQL or internal names.
 - D16. (sections 3 and 4, Q20) "Every body is JSON" in section 4 applies to /api/* only; /, /app.js and /styles.css are served as HTML, JavaScript and CSS.
 - D17. (section 3, R10, Q21) If the database file already has any rooms, create_app does not add, change or remove rooms.
+- D18. (R3) A string field that contains an unpaired surrogate (for example the JSON escape "\ud800" alone) is not valid text, so the body gives 422 invalid_request, the same as a body that is not valid UTF-8 (D9).
 
 **Proposed, not built.**
 
