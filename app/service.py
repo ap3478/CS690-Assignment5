@@ -1,4 +1,4 @@
-"""The rules of RoomBook (spec section 5, with decisions D1 to D18).
+"""The rules of RoomBook (spec section 5, with decisions D1 to D19).
 
 Every check is done here by hand. Nothing is saved until every check has passed, so
 a request that fails changes nothing (R9).
@@ -28,6 +28,9 @@ OPEN_MINUTE = 8 * 60
 CLOSE_MINUTE = 22 * 60
 MAX_LENGTH_MINUTES = 180
 
+# R11: bookings one person may hold on one date.
+DAILY_LIMIT = 2
+
 FIELDS = ("room_id", "date", "start", "end", "booked_by")
 
 MESSAGES = {
@@ -37,6 +40,7 @@ MESSAGES = {
     "room_not_found": "That room does not exist.",
     "booking_not_found": "That booking does not exist. It may already be cancelled.",
     "overlap": "That room is already booked for part of that time.",
+    "daily_limit": "You already have 2 bookings on that day.",
 }
 STATUS = {
     "invalid_request": 422,
@@ -45,6 +49,7 @@ STATUS = {
     "room_not_found": 404,
     "booking_not_found": 404,
     "overlap": 409,
+    "daily_limit": 409,
 }
 
 
@@ -81,6 +86,11 @@ def _is_valid_text(value: str) -> bool:
     except UnicodeEncodeError:
         return False
     return True
+
+
+def _person_key(name: str) -> str:
+    """R11 and D19: who a booking belongs to, outer whitespace removed and case folded."""
+    return name.strip().casefold()
 
 
 def _is_date(value: str) -> bool:
@@ -150,10 +160,10 @@ class BookingService:
             room_id = candidate
         return [Booking(**row) for row in self.repo.list_bookings(date_raw, room_id)]
 
-    # R3 to R7 ------------------------------------------------------------------------
+    # R3 to R7 and R11 ----------------------------------------------------------------
 
     def create_booking(self, raw_body: bytes) -> Booking:
-        """Validate a POST /api/bookings body in R9 order (R3, R4, R5, R6, R7) and save it.
+        """Validate a POST /api/bookings body in R9 order (R3, R4, R5, R6, R7, R11) and save it.
 
         Only the first broken rule is reported.
         """
@@ -202,11 +212,13 @@ class BookingService:
         if isinstance(room_id, _LongInteger) or room_id not in self._room_ids():
             raise ServiceError("room_not_found")
 
-        # R7: overlap check and save in one step (D13).
+        # R7 then R11: overlap, daily limit and save in one locked step (D13).
         request = BookingRequest(room_id, date, start, end, name)
-        row = self.repo.create_booking_if_free(**request.to_dict())
-        if row is None:
-            raise ServiceError("overlap")
+        outcome, row = self.repo.create_booking_if_free(
+            **request.to_dict(), person_key=_person_key, max_per_person=DAILY_LIMIT
+        )
+        if outcome != "created":
+            raise ServiceError(outcome)
         return Booking(**row)
 
     # R8 ------------------------------------------------------------------------------

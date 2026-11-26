@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import sqlite3
 from contextlib import closing
+from typing import Callable
 
 # Spec section 2: the four rooms. They are added only when the file has no rooms (D17).
 ROOMS = [
@@ -87,12 +88,22 @@ class Repository:
         return [dict(row) for row in rows]
 
     def create_booking_if_free(
-        self, room_id: int, date: str, start: str, end: str, booked_by: str
-    ) -> dict | None:
-        """Check for overlap and save in one locked step (D13).
+        self,
+        room_id: int,
+        date: str,
+        start: str,
+        end: str,
+        booked_by: str,
+        person_key: Callable[[str], str],
+        max_per_person: int,
+    ) -> tuple[str, dict | None]:
+        """Check for overlap, then the daily limit, and save, all in one locked step.
 
-        Returns the new booking, or None when it overlaps an existing booking for the
-        same room on the same date. Nothing is saved when it returns None or raises.
+        The service supplies the daily-limit policy: person_key maps a name to who it
+        belongs to, and max_per_person is how many bookings one person may hold on a date.
+
+        Returns ("created", booking), ("overlap", None) or ("daily_limit", None).
+        Nothing is saved unless it returns "created".
         """
         with closing(self._connect()) as conn:
             conn.execute("BEGIN IMMEDIATE")
@@ -105,7 +116,15 @@ class Repository:
                 ).fetchone()
                 if clash is not None:
                     conn.execute("ROLLBACK")
-                    return None
+                    return "overlap", None
+                person = person_key(booked_by)
+                names = conn.execute(
+                    "SELECT booked_by FROM bookings WHERE date = ?", (date,)
+                ).fetchall()
+                held = sum(1 for (name,) in names if person_key(name) == person)
+                if held >= max_per_person:
+                    conn.execute("ROLLBACK")
+                    return "daily_limit", None
                 cur = conn.execute(
                     'INSERT INTO bookings (room_id, date, "start", "end", booked_by)'
                     " VALUES (?, ?, ?, ?, ?)",
@@ -117,7 +136,7 @@ class Repository:
                 if conn.in_transaction:
                     conn.execute("ROLLBACK")
                 raise
-        return {
+        return "created", {
             "id": new_id,
             "room_id": room_id,
             "date": date,
