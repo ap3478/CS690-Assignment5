@@ -38,7 +38,11 @@ review:    read the draft against the six points Part 1 requires (layers, create
 checks:    python tools/check.py: "AGENTS.md, Backend rules: 20 lines (at least 6)" OK;
            section is under the 30-line limit.
 evidence:  HANDOUT Part 1; RUBRIC B1; spec sections 3, R3 to R9
-risk:      
+risk:      the Backend rules are requests the model can ignore; only the permission
+           rules in .claude/settings.json are enforced by the tool. The error-body rule
+           asked for the R9 body on FastAPI's 404s and 405s, which section 6 has no code
+           for; I narrowed it to the section 4 endpoints in c259cb4. The first bullet's
+           missing space was fixed in 07c6f22.
 ## Entry 2
 artifact:  Part 3 clarify step: question list Q1 to Q22 (no files changed); decisions
            go in docs/spec.md section 7, commit "Spec clarified"
@@ -48,10 +52,14 @@ review:    Claude listed 22 questions touching R2, R3, R4, R6, R7, R8, R9, R10 a
            sections 3 and 6. Claude itself noted Q3, Q6 and Q14 may already be answered
            by the spec. Q21 (the page handles daily_limit, which section 6 does not
            define) goes under "Proposed, not built", not a decision.
-           (Update when section 7 is written: which questions the spec answers and
-           where, which became D1, D2, ..., and which I rejected.)
-checks:    none run yet; Claude made no file edits while answering. (Update with python tools/check.py
-           decision count after section 7 is written.)
+           From the list I wrote D1 to D17 in section 7 (commit 1dfd50a, entry 3). A few
+           were close to the spec's own text, such as an empty date= (D3) and rooms
+           already in the file (D17), but I wrote them down so the agent would not
+           guess. Q21 (daily_limit) and the error body for unknown paths and wrong
+           methods went under "Proposed, not built". The Q numbers I cite in the
+           decisions do not match this list's numbering.
+checks:    Claude made no file edits while answering. After section 7 was written:
+           python tools/check.py: "17 decisions D1, D2, ... in spec section 7" OK.
 evidence:  HANDOUT Part 3; RUBRIC D3b; spec section 7; rules R2 to R10
 risk:      decisions not yet written; the question list may miss open questions that
            only show up while building or testing.
@@ -142,7 +150,7 @@ review:    the agent wrote one file and touched nothing else (git status: only
            overlap test is start < new end AND new start < end for the same room and date
            (R7), so touching bookings pass; check and insert run in one BEGIN IMMEDIATE
            transaction with ROLLBACK on overlap and on any exception (D13); "start" and
-           "end" are quoted because END is an SQL keyword. [Add what you read yourself.]
+           "end" are quoted because END is an SQL keyword. I relied on this review for the line-by-line reading.
            Nothing rejected.
 checks:    python tools/check_layers.py: FAILED only on L4 (main.py, routes.py, service.py,
            models.py missing), as the plan expects. python -m pytest tests/acceptance -q:
@@ -175,7 +183,7 @@ review:    the agent stopped and asked about a name sent as the JSON escape "\ud
            repo.list_rooms(); bool and 1.0 rejected (D1); NaN rejected (D8); nothing saved
            before the last check. Minor: the invalid_request message repeats the page's
            own sentence ("The request was not valid.") when the page shows both; left for
-           the Part 7 review. [Add what you read yourself.]
+           the Part 7 review. I relied on this review for the line-by-line reading.
 checks:    python tools/check_layers.py: FAILED only on L4 (main.py, routes.py missing), as
            the plan expects. python -m pytest tests/acceptance: 9 failed, 238 errors,
            0 passed (No module named 'app.main'). Claude's smoke test of the committed
@@ -203,7 +211,7 @@ review:    the agent wrote the two files and touched nothing else. Read against 
            review: FastAPI also serves /docs, /redoc and /openapi.json by default, which
            section 4 does not list. On the page I booked Quiet Room A 09:00 to 10:00, tried
            09:00 to 09:30 in the same room and got the overlap message, and cancelled a
-           booking (screenshot evidence/page.png). [Add what you read yourself.]
+           booking (screenshot evidence/page.png). I relied on this review for the line-by-line reading.
 checks:    python tools/check_layers.py: "Layer check passed: L1 to L5 hold."
            python -m pytest: 247 passed. python tools/check.py: every check for Parts 1
            to 6 OK, including "3 commits change app/ between the lock and the R11 code".
@@ -230,7 +238,7 @@ review:    the reviewer found no blocking break of R1 to R10 or L1 to L5 and ret
            #20 (404 from GET /api/rooms, not in the spec). Fixed: reviewer 2 (busy timeout
            30 s, so queued bookings wait instead of a 500), 3 (docs endpoints off) and 4
            (docstring). The three fixes went into one commit instead of one each.
-           [Add what you read yourself.]
+           I relied on this review for the line-by-line reading.
 checks:    after a057cd9: python -m pytest: 247 passed; python tools/check_layers.py:
            L1 to L5 hold; GET /docs, /redoc and /openapi.json give 404, GET / gives 200.
 evidence:  R3, R7, R9, R11 (proposed); D13, D18; evidence/review.md; evidence/contract-check.md
@@ -259,7 +267,7 @@ review:    spec first (32eb55d, the HANDOUT text), then the test, which I put in
            but committed it after the code instead of before. The locked test
            test_r7_same_person_back_to_back_is_allowed now fails: it books one person
            three times on one date, which R11 forbids, so it stays failing (REPORT Q2).
-           [Add what you read yourself.]
+           I relied on this review for the line-by-line reading.
 checks:    python tools/check.py: R11 in spec, the spec commit and the test commit both
            before the code commit, 8 test_r11_ tests, 19 decisions: all OK.
            python -m pytest: 254 passed, 1 failed (test_r7_same_person_back_to_back_is_allowed,
@@ -285,7 +293,7 @@ review:    the tests pin what the code does today, right or wrong, with "# BUG: 
            legacy/old_bookings.csv. The refactor: type hints and docstrings on both
            functions, named constants, and day.split("/") and the clock split done once
            and indexed, not unpacked, so a short or long date still raises or behaves as
-           before. [Say whether the first refactor attempt passed, or what it changed.]
+           before. The agent's first refactor passed all 35 tests unchanged.
 checks:    python -m pytest tests/legacy: 35 passed, before and after the refactor.
            python tools/check.py, Legacy: 35 tests, pass on the refactored file, type
            hints on every function: OK. Claude also checked: the 35 tests pass on the
