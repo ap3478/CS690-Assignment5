@@ -162,11 +162,28 @@ request they accept, accept a request they reject, or change a route, field, sta
 or error code. If you think a rule is missing, write it under "Proposed, not built" with
 your reason; it is not built in this assignment.
 
-- D1.
+- D1. (R3, Q9) In a POST /api/bookings body, room_id is an integer only if it is a JSON number with no decimal point and no exponent, so 1.0, 1e0, "1" and true give 422 invalid_request.
+- D2. (R2, R8, Q4, Q17) In GET /api/bookings?room_id= and DELETE /api/bookings/{id}, a value is an integer if it is an optional - followed by one or more ASCII digits, so 01 and -1 are integers while +1, " 1", 1.0 and abc give 422 invalid_request; an integer that is not a room gives 404 room_not_found and one that matches no booking gives 404 booking_not_found, even when it is too large for the database.
+- D3. (R2, Q5) A query parameter given with an empty value (date= or room_id=) counts as given and not valid, and gives 422 invalid_request.
+- D4. (R2, Q6) GET /api/bookings checks in this order: date, then the format of room_id, then whether that room exists; only the first problem is reported.
+- D5. (R2, Q7) When a query parameter appears more than once, the last value is used.
+- D6. (R2, Q8) Query parameters not named in R2 are ignored, the same as unknown body fields in R3.
+- D7. (R2, R3, Q2, Q3) "Digits" in dates and times means ASCII 0-9 only, and a real calendar day has a year from 0001 to 9999 in the Gregorian calendar, so year 0000 gives 422 invalid_request.
+- D8. (R3, Q10) Valid JSON means RFC 8259 JSON, so NaN, Infinity and -Infinity give 422 invalid_request; when an object has a duplicate key, the last value is used.
+- D9. (R3, Q11) The Content-Type header is not checked, and a body that is not valid UTF-8 counts as invalid JSON and gives 422 invalid_request.
+- D10. (R4, Q12) Trimming removes the characters Python's str.strip() treats as whitespace, including Unicode spaces such as the non-breaking space; zero-width characters are not whitespace and are kept.
+- D11. (R4, Q13) Name length is counted in Unicode code points after trimming.
+- D12. (R4, Q14) Any characters inside the name, including tabs and newlines, are allowed and stored as typed, because R4 only limits length.
+- D13. (R7, R9, Q15) The overlap check and the save happen as one step, so if two overlapping requests arrive at the same time, exactly one gets 201 and the other gets 409 overlap.
+- D14. (section 2, R8, Q16) A booking id is never reused, even after that booking is cancelled.
+- D15. (R9, Q19) message is a short, plain-English sentence for the person using the page, and never contains stack traces, SQL or internal names.
+- D16. (sections 3 and 4, Q20) "Every body is JSON" in section 4 applies to /api/* only; /, /app.js and /styles.css are served as HTML, JavaScript and CSS.
+- D17. (section 3, R10, Q21) If the database file already has any rooms, create_app does not add, change or remove rooms.
 
 **Proposed, not built.**
 
-- (none yet)
+- Daily limit (Q1). The page has a message for daily_limit ("You already have 2 bookings on that day"), but the spec has no such rule or error code; adding it would reject requests sections 5 and 6 accept, which section 7 does not allow. If the product owner wants it, they must also decide what counts as the same person (an exact booked_by match, or one that ignores case and whitespace). Until then, the backend never sends daily_limit.
+- Error body outside section 4 (Q18). Unknown paths, wrong methods and trailing-slash paths could return the R9 error body, but R9 covers only the endpoints in section 4, and section 6 has no error code for a 404 unknown path or a 405 wrong method; using invalid_request with those statuses would change section 6. Until the spec defines them, these responses keep FastAPI's defaults.
 
 ## 8. Change log
 
