@@ -1,0 +1,11 @@
+Tool: Claude (claude.ai, cloud agent session), model Claude Opus 5.5, 2026-11-25
+Change: Part 8, step 1: docs/spec.md, rule R11 (daily limit), the text and edits given
+in HANDOUT Part 8; commit "Spec: R11 daily limit"
+
+Prompts typed, word for word, in order:
+
+----- 1 -----
+all done. What's next task
+
+----- 2 -----
+I didn't change anything, so go ahead with the prompt

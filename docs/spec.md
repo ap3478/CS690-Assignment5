@@ -1,7 +1,7 @@
 # RoomBook backend specification
 
 Version 1. This file is the source of truth for the backend. Tests, reviews and commits
-point at the rule IDs in section 5 (R1 to R10).
+point at the rule IDs in section 5 (R1 to R11).
 
 ## 1. What the backend does
 
@@ -131,11 +131,17 @@ empty body. Its time is free to book again. If no booking has that id:
   This includes the `422` responses for invalid JSON, missing fields and wrong types.
 - A request that fails changes nothing: no booking is created, changed or removed.
 - When a `POST /api/bookings` request breaks more than one rule, only the first one in
-  this order is reported: R3, R4, R5, R6, R7.
+  this order is reported: R3, R4, R5, R6, R7, R11.
 
 **R10. The application.** `create_app` behaves as section 3 says: it serves the page,
 keeps data in the one file at `db_path`, never shares data between different files, and
 sees data saved earlier in the same file.
+
+**R11. Daily limit.** One person may hold at most two bookings on the same date,
+across all rooms. Two bookings belong to the same person when their `booked_by`
+values are equal after removing leading and trailing whitespace and ignoring
+upper and lower case. A third booking for that person on that date is rejected
+with `409 daily_limit`. Cancelling a booking frees its place.
 
 ## 6. Error codes
 
@@ -147,6 +153,7 @@ sees data saved earlier in the same file.
 | 404 | `room_not_found` | R2, R6 |
 | 404 | `booking_not_found` | R8 |
 | 409 | `overlap` | R7 |
+| 409 | `daily_limit` | R11 |
 
 ## 7. Decisions
 
@@ -183,9 +190,10 @@ your reason; it is not built in this assignment.
 
 **Proposed, not built.**
 
-- Daily limit (Q1). The page has a message for daily_limit ("You already have 2 bookings on that day"), but the spec has no such rule or error code; adding it would reject requests sections 5 and 6 accept, which section 7 does not allow. If the product owner wants it, they must also decide what counts as the same person (an exact booked_by match, or one that ignores case and whitespace). Until then, the backend never sends daily_limit.
+- Daily limit (Q1). Built in Version 2 as R11 (section 5), which the product owner decided; it also settles what counts as the same person.
 - Error body outside section 4 (Q18). Unknown paths, wrong methods and trailing-slash paths could return the R9 error body, but R9 covers only the endpoints in section 4, and section 6 has no error code for a 404 unknown path or a 405 wrong method; using invalid_request with those statuses would change section 6. Until the spec defines them, these responses keep FastAPI's defaults.
 
 ## 8. Change log
 
 - Version 1: first version.
+- Version 2: R11 added.
