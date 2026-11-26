@@ -126,3 +126,31 @@ evidence:  R1 to R10; tag a5-tests-locked; RUBRIC C1, C2, B2a; evidence/permissi
 risk:      tests r9 r3_before_r5 and r3_before_r6 depend on how a backend treats True and
            9.0; the tests are checked against no backend yet; the deny rule does not stop
            Bash from changing a test (REPORT Q6).
+
+## Entry 6
+artifact:  commit b227636, app/repository.py (Part 6, Task 1 of docs/plan.md)
+tool:      Claude Code [version], main agent, 2026-11-25; review by Claude (claude.ai,
+           Claude Opus 5.5)
+prompts:   the HANDOUT Part 6 task prompt for Task 1; prompts/06-task1.txt
+review:    the agent wrote one file and touched nothing else (git status: only
+           app/repository.py). It ran its checks with .venv/bin/python because python is
+           not on my PATH and python3 is 3.9; I now activate the venv before starting
+           Claude Code. Read against the plan and the spec: Repository(db_path) opens a
+           new connection per call with isolation_level=None and closes it; tables are
+           created if missing and the four rooms added only when rooms is empty (D17);
+           bookings use AUTOINCREMENT (D14); list order is room_id, then start (R2); the
+           overlap test is start < new end AND new start < end for the same room and date
+           (R7), so touching bookings pass; check and insert run in one BEGIN IMMEDIATE
+           transaction with ROLLBACK on overlap and on any exception (D13); "start" and
+           "end" are quoted because END is an SQL keyword. [Add what you read yourself.]
+           Nothing rejected.
+checks:    python tools/check_layers.py: FAILED only on L4 (main.py, routes.py, service.py,
+           models.py missing), as the plan expects. python -m pytest tests/acceptance -q:
+           9 failed, 238 errors, 0 passed (No module named 'app.main'). Claude's smoke
+           test of the committed file: init_db twice gives 4 rooms; overlap, containing
+           and touching cases; other room; order; delete True then False; new id larger
+           after a delete; 20 threads booking the same slot gave exactly 1 booking.
+evidence:  R1, R2, R7, R8, R10; D13, D14, D17; docs/plan.md Task 1; AGENTS.md Backend rules
+risk:      delete_booking and list_bookings raise OverflowError for integers beyond
+           SQLite's 64-bit range; the plan makes the service filter those first (Task 2),
+           so this must be checked there. No acceptance test can run until Task 3.
