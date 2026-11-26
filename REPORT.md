@@ -98,6 +98,18 @@ Did the contract checker, or any earlier step, notice that the page already hand
 error code the spec did not define? Why does a change go spec, then test, then code, in
 three commits?
 
+DRAFT: check every sentence against what you did.
+
+Yes, twice before R11 existed. The Part 3 clarify step listed it, and I put it under
+"Proposed, not built" in spec section 7 instead of deciding it. The contract checker
+then reported it as mismatch #19 (the page handles daily_limit, the spec and backend do
+not), and I rejected the finding as "not in the spec" (REPORT Q4, row 5). Spec first
+(32eb55d) means the rule is agreed in writing before anyone builds it; the test next
+(76ce428) shows the rule is missing, failing for the right reason (201 instead of 409),
+before any code exists; the code last (767023f) makes that test pass. Three commits let a
+reader, and the grader, check the order. I broke this order once: D19 (case folding)
+went into the spec after the code that uses it (5a4dcfa).
+
 ## 6. Where the lock stops (Part 4)
 
 Name one way an agent could still change a locked test despite your deny rule, and what
@@ -140,6 +152,19 @@ by R3), then change the pinned test and the code in the same commit.
 
 What did giving each agent one job and its own tools buy you? Name one thing that went
 wrong with an agent and how you caught it.
+
+DRAFT: check every sentence against what you did.
+
+One job each kept each agent honest. The test-writer could write tests but, after the
+lock, not change them; the reviewer and contract checker could only read, so they had to
+report problems instead of quietly "fixing" them, and every finding needed my answer
+(REPORT Q4). The contract checker found what tests cannot: two things the page expects
+that the spec does not define. What went wrong: the test-writer's first run produced 289
+tests, about 40 of which tested my section 7 decisions instead of the spec (for example
+ids never reused, D14), and its fix run skipped the R6, R7 and R8 changes. I caught the
+first by reading the tests against the spec before the lock (ledger entry 4), and the
+second because python tools/check.py tests showed 257 tests instead of the expected 247.
+Two R9 cases still slipped through to the lock (REPORT Q2).
 
 ## Screenshot
 
