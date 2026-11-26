@@ -103,3 +103,26 @@ evidence:  RUBRIC C1, C3, C4; spec sections 1 to 6 and section 7 D1 to D14
 risk:      the review is by reading, against no backend; a test can still be wrong in a
            way only a correct backend would show. The fixes are made by the test-writer
            from the list, so its diff must be checked before the lock.
+
+## Entry 5
+artifact:  commits 7c424ac (tests/acceptance/, 247 tests for R1 to R10) and 7998c23 (deny rule
+           Edit(/tests/acceptance/**) in .claude/settings.json), tag a5-tests-locked on 7998c23
+tool:      Claude Code [version], test-writer subagent, 2026-11-25; review by Claude
+           (claude.ai, Claude Opus 5.5), see entry 4
+prompts:   the HANDOUT Part 4 prompt, the fix list from the review, and a follow-up for the
+           fixes it missed; prompts/04-tests.txt
+review:    the first run gave 289 tests; about 40 cases tested section 7 decisions, not
+           the spec, and were removed from a list (entry 4). After the fix list the counts
+           were R6 9, R7 14, R8 19, 257 in total: the R6, R7 and R8 fixes had not been
+           applied, so I sent a follow-up and got 247. Missed: the two R9 order cases still
+           use room_id True and 9.0 instead of "1" and "9", found only after the lock by
+           comparing with the reviewed copy. They pass on a backend that follows D1, but
+           fail on one that coerces types; left as locked (rule 2) and noted in REPORT Q2.
+checks:    python tools/check.py tests: 247 tests, R1 2, R2 40, R3 89, R4 21, R5 31, R6 8,
+           R7 13, R8 11, R9 20, R10 12; 0 passed, 247 failed or errored.
+           python tools/check.py, Lock section: tag exists, deny rules in the tagged commit,
+           no backend code at the tag, 247 tests, 0 passed, locked files unchanged: all OK.
+evidence:  R1 to R10; tag a5-tests-locked; RUBRIC C1, C2, B2a; evidence/permission-denied.md
+risk:      tests r9 r3_before_r5 and r3_before_r6 depend on how a backend treats True and
+           9.0; the tests are checked against no backend yet; the deny rule does not stop
+           Bash from changing a test (REPORT Q6).
