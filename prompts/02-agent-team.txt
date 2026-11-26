@@ -1,0 +1,6 @@
+Tool: Claude (claude.ai, cloud agent session), model Claude Opus 5.5, 2026-11-25
+Change: .claude/agents/test-writer.md, reviewer.md, contract-checker.md (Part 2)
+
+Prompts typed, word for word:
+
+1. start with part 2
