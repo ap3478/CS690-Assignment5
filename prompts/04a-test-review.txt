@@ -1,0 +1,33 @@
+Tool: Claude (claude.ai, cloud agent session), model Claude Opus 5.5, 2026-11-25
+Change: review of the draft acceptance tests on branch tests-review (commit b57b99b),
+before the lock; produced the fix list given to the test-writer subagent
+
+Prompts typed, word for word, in order:
+
+----- 1 -----
+Do I commit acceptance tests after claude code output?
+
+----- 2 -----
+[ OK ] R1: 2 tests named test_r1_...
+[ OK ] R2: 56 tests named test_r2_...
+[ OK ] R3: 105 tests named test_r3_...
+[ OK ] R4: 21 tests named test_r4_...
+[ OK ] R5: 31 tests named test_r5_...
+[ OK ] R6: 9 tests named test_r6_...
+[ OK ] R7: 14 tests named test_r7_...
+[ OK ] R8: 19 tests named test_r8_...
+[ OK ] R9: 20 tests named test_r9_...
+[ OK ] R10: 12 tests named test_r10_...
+[ -- ] R11: 0 tests (R11 comes in Part 8)
+[INFO] run now: 0 passed, 289 failed or errored
+
+All checks passed.
+
+----- 3 -----
+go to next step
+
+----- 4 -----
+what should I give test-writer?
+
+----- 5 -----
+create a ledger entry and start building the report

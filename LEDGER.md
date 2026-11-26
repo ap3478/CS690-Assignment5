@@ -78,3 +78,28 @@ evidence:  HANDOUT Part 3, step 3; spec section 7 rule; sections 4 to 6 (R9, err
 risk:      the AGENTS.md Backend rule still asks for the R9 body on FastAPI's 404s and
            405s, which contradicts the new "Proposed, not built" entry until I fix it;
            the daily-limit entry will be superseded by R11 in Part 8.
+
+## Entry 4
+artifact:  review of the draft acceptance tests on branch tests-review, commit b57b99b
+           (289 tests by the test-writer subagent), before the lock
+tool:      Claude (claude.ai cloud agent session), Claude Opus 5.5 (claude-opus-5-5), 2026-11-25; main agent, no subagent
+prompts:   pasted the check.py tests output, asked for the next step and for a fix list to
+           give the test-writer; prompts/04a-test-review.txt
+review:    Claude read all 289 tests against sections 1 to 6. The tests check status,
+           error code, exact error keys and "nothing saved" throughout, but about 40
+           cases tested my section 7 decisions, not the spec: D1 (1.0, 1e0), D2 (01, +1,
+           " 1", fullwidth digits), D3 (empty room_id), D4 (GET check order), D5 and D8
+           (last value wins), D7 (year 0000, fullwidth digits), D8 (NaN), D9
+           (Content-Type, non-UTF-8), D13 (simultaneous requests), D14 (ids not reused),
+           plus integers too large for SQLite. A correct backend that decided those
+           differently would fail them (RUBRIC C3). Two R9 order cases used True and 9.0
+           for room_id, which depend on type coercion; changed to "1" and "9". Kept the
+           R4 Unicode and length tests and room_id true: Python's strip() and len() and
+           JSON's boolean type make them follow from the spec.
+checks:    Claude applied the same changes to a scratch copy (not pushed) and ran
+           python tools/check.py tests: 247 tests, R1 2, R2 40, R3 89, R4 21, R5 31, R6 8,
+           R7 13, R8 11, R9 20, R10 12; run now: 0 passed, 247 failed or errored.
+evidence:  RUBRIC C1, C3, C4; spec sections 1 to 6 and section 7 D1 to D14
+risk:      the review is by reading, against no backend; a test can still be wrong in a
+           way only a correct backend would show. The fixes are made by the test-writer
+           from the list, so its diff must be checked before the lock.
