@@ -26,8 +26,9 @@ another team. The backend in `app/` is built to match `docs/spec.md`.
 - `app/main.py` defines `create_app(db_path: str = "roombook.db")` exactly as spec
   section 3 says: create tables and seed the four rooms if missing, serve
   `frontend/index.html`, `/app.js` and `/styles.css`, and keep all data in `db_path`.
-- Every error response, including FastAPI's own 422s, 404s and 405s, has exactly the
-  body `{"error": "<code>", "message": "<text>"}` from R9, with a code from section 6.
+- Every error response from the endpoints in spec section 4, including FastAPI's own
+  422s, has exactly the body `{"error": "<code>", "message": "<text>"}` from R9, with a
+  code from section 6. Unknown paths and wrong methods keep FastAPI's defaults.
 - Use `sqlite3` from the standard library. No ORM, no new packages.
 - Open a new connection for each repository call and close it when done. Never share
   one connection between requests: FastAPI runs requests on several threads.
