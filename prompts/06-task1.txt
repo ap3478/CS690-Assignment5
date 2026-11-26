@@ -1,0 +1,9 @@
+Tool: Claude Code [version], main agent, 2026-11-25
+Change: Part 6, Task 1 of docs/plan.md: app/repository.py
+
+Prompt typed into Claude Code, word for word:
+[Check against what you actually typed, and add any follow-up prompts below it.]
+
+Do Task 1 of docs/plan.md and nothing else. Follow AGENTS.md. When you finish,
+run python tools/check_layers.py and python -m pytest tests/acceptance, and
+report the results. Do not edit any test.
