@@ -34,10 +34,13 @@ The first draft had 289 tests, and about 40 cases tested my section 7 decisions 
 of sections 1 to 6 (ledger entry 4). For example, test_r8_ids_are_not_reused_after_cancel
 expected a new booking never to get a cancelled id (D14), but section 2 only forbids two
 *current* bookings sharing an id, so a correct backend using plain SQLite ids would fail
-it. Two R9 order cases also used `room_id: True` and `9.0`, which give a different error
-if a backend coerces types; they now use the strings "1" and "9". The test-writer removed
-or changed these from a list, leaving 247 tests that all failed at the lock
-(tag a5-tests-locked). [After Part 6: did any locked test turn out to be wrong?]
+it. The test-writer removed these from a list, leaving 247 tests that all failed at the
+lock (tag a5-tests-locked). Two R9 order cases, r3_before_r5 and r3_before_r6, use
+`room_id: True` and `9.0`; the fix to use the strings "1" and "9" was missed and only
+found after the lock. They pass on a backend that follows D1, but a correct backend that
+coerces `true` to 1 or `9.0` to 9 reports a later rule, so they check something sections
+1 to 6 do not clearly fix. They stay as locked. [After Part 6: did any other locked test
+turn out to be wrong?]
 
 
 ## 3. The plan (Part 5)
