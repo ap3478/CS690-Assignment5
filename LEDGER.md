@@ -55,3 +55,26 @@ checks:    none run yet; Claude made no file edits while answering. (Update with
 evidence:  HANDOUT Part 3; RUBRIC D3b; spec section 7; rules R2 to R10
 risk:      decisions not yet written; the question list may miss open questions that
            only show up while building or testing.
+
+## Entry 3
+artifact:  commit 1dfd50a, docs/spec.md section 7 "Proposed, not built" (daily limit; error
+           bodies outside section 4), and decisions D5 and D8
+tool:      Claude (claude.ai cloud agent session), Claude Opus 5.5 (claude-opus-5-5), 2026-11-25; main agent, no subagent
+prompts:   asked whether my draft decisions met the section 7 criteria, asked for the format
+           fixed and shown before commit, moved D15 and chose last-value-wins, asked to
+           commit; prompts/03b-proposed-not-built.txt
+review:    the daily-limit entry is mine from my draft: the page handles daily_limit but
+           section 6 does not define it, so building it would reject requests the spec
+           accepts. Claude flagged that my draft D15 (invalid_request with FastAPI's 404
+           and 405) would change section 6, which ties invalid_request to 422; I moved it
+           to "Proposed, not built" instead of deciding it. Claude also flagged that 422
+           for duplicate query parameters and duplicate JSON keys (D5, D8) rejects requests
+           the spec arguably accepts; I changed both to "last value wins". Claude only
+           reformatted the decision lines to "- Dn." and removed my notes to myself;
+           I read the final text before it was committed.
+checks:    python tools/check.py: "17 decisions D1, D2, ... in spec section 7" OK;
+           git diff before commit: only section 7 of docs/spec.md changed.
+evidence:  HANDOUT Part 3, step 3; spec section 7 rule; sections 4 to 6 (R9, error codes)
+risk:      the AGENTS.md Backend rule still asks for the R9 body on FastAPI's 404s and
+           405s, which contradicts the new "Proposed, not built" entry until I fix it;
+           the daily-limit entry will be superseded by R11 in Part 8.

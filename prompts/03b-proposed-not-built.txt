@@ -1,0 +1,46 @@
+Tool: Claude (claude.ai, cloud agent session), model Claude Opus 5.5, 2026-11-25
+Change: docs/spec.md section 7, "Proposed, not built" (commit 1dfd50a, "Spec clarified"),
+plus the D5 and D8 choices made in the same exchange
+
+Prompts typed, word for word, in order:
+
+----- 1 -----
+do these meet the criteria?
+- D1 (R3, from Q9). In a POST /api/bookings body, room_id is an integer only if it is a JSON number with no decimal point and no exponent. So 1.0, 1e0, "1" and true give 422 invalid_request.
+- D2 (R2, R8, from Q4, Q17). In GET /api/bookings?room_id=… and in DELETE /api/bookings/{id}, a value is an integer if it is an optional - followed by one or more ASCII digits. So 01 and -1 are integers, while +1,  1, 1.0 and abc give 422 invalid_request.
+  - An integer that is not a room gives 404 room_not_found, and one that matches no booking gives 404 booking_not_found.
+  - This holds even when the number is too large for the database.
+- D3 (R2, from Q5). A parameter given with an empty value (date= or room_id=) counts as given and not valid. It gives 422 invalid_request.
+- D4 (R2, from Q6). GET /api/bookings checks in this order: date, then the format of room_id, then whether that room exists. Only the first problem is reported.
+- ⚠ D5 (R2, from Q7). A parameter that appears more than once gives 422 invalid_request. (The other choice is that the last value wins, which is FastAPI's default. Pick one.)
+- D6 (R2, from Q8). Query parameters not named in R2 are ignored, the same as unknown body fields in R3.
+- D7 (R2, R3, from Q2, Q3). "Digits" in dates and times means ASCII 0–9 only. A real calendar day has a year from 0001 to 9999 in the Gregorian calendar, so year 0000 gives 422 invalid_request.
+- ⚠ D8 (R3, from Q10). Valid JSON means RFC 8259 JSON, so NaN, Infinity and -Infinity give 422 invalid_request. An object with a duplicate key also gives 422 invalid_request. (RFC 8259 allows duplicate keys, so they're arguably valid JSON. The other choice is that the last value wins. Pick one.)
+- D9 (R3, from Q11). The Content-Type header is not checked. A body that is not valid UTF-8 counts as invalid JSON and gives 422 invalid_request.
+- D10 (R4, from Q12). Trimming removes the characters Python's str.strip() treats as whitespace, which includes Unicode spaces such as the non-breaking space. Zero-width characters are not whitespace and are kept.
+- D11 (R4, from Q13). Length is counted in Unicode code points after trimming.
+- D12 (R4, from Q14). Any characters inside the name, including tabs and newlines, are allowed and stored as typed. R4 only limits length, so rejecting them would break section 7's rule.
+- D13 (R7, R9, from Q15). The overlap check and the save happen as one step. If two overlapping requests arrive at the same time, exactly one gets 201 and the other gets 409 overlap.
+- D14 (section 2, R8, from Q16). A booking id is never reused, even after that booking is cancelled.
+- ⚠ D15 (R9, from Q18). Errors outside section 4 (unknown paths, wrong methods, trailing-slash paths) keep the status FastAPI gives (404 or 405), with the body {"error": "invalid_request", "message": …}.
+  - This pairs invalid_request with statuses section 6 doesn't list for it. The other choice is to leave these responses outside the spec. AGENTS.md asks for the error shape on every error, so ask your instructor which they want.
+- D16 (R9, from Q19). message is a short, plain-English sentence for the person using the page. It never contains stack traces, SQL or internal names.
+- D17 (section 3, section 4, from Q20). "Every body is JSON" in section 4 applies to /api/* only. /, /app.js and /styles.css are served as HTML, JavaScript and CSS.
+- ⚠ D18 (section 3, R10, from Q21). If the database file already has any rooms, create_app does not add, change or remove rooms. (Alternatively it could fail with an error. Pick one.)
+
+Proposed, not built.
+
+- Daily limit (from Q1). The page has a message for daily_limit ("You already have 2 bookings on that day"). The spec has no such rule or error code. Adding it would reject requests sections 5–6 accept, which section 7 doesn't allow. If the product owner wants it, they also need to decide what counts as the same person (an exact booked_by match, or one that ignores case and whitespace). Until then, the backend never sends daily_limit.
+
+----- 2 -----
+fix the format and show me before commiting
+
+----- 3 -----
+Move D15 to proposed, not built
+D5 and D8.- Last value wins
+
+----- 4 -----
+commit, and tell me whether to include that `AGENTS.md` change
+
+----- 5 -----
+add the ledger entry for the proposed not built section
