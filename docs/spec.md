@@ -187,6 +187,7 @@ your reason; it is not built in this assignment.
 - D16. (sections 3 and 4, Q20) "Every body is JSON" in section 4 applies to /api/* only; /, /app.js and /styles.css are served as HTML, JavaScript and CSS.
 - D17. (section 3, R10, Q21) If the database file already has any rooms, create_app does not add, change or remove rooms.
 - D18. (R3) A string field that contains an unpaired surrogate (for example the JSON escape "\ud800" alone) is not valid text, so the body gives 422 invalid_request, the same as a body that is not valid UTF-8 (D9).
+- D19. (R11) "Ignoring upper and lower case" means full Unicode case folding, as Python's str.casefold() does, so "Straße", "STRASSE" and "strasse" are the same person.
 
 **Proposed, not built.**
 
