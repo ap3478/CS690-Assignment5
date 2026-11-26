@@ -119,6 +119,23 @@ tests/acceptance/ at the tag a5-tests-locked with the submitted commit
 Which odd behaviors did you pin? Did the agent's first refactor change any behavior, and
 how did you find out? Before fixing one of these bugs for real, what would you check?
 
+DRAFT: check every sentence against what you did.
+
+tests/legacy/test_old_format.py pins 35 behaviors, including these wrong ones, each
+marked "# BUG: pinned, not fixed": 12:15 PM becomes 24:15, 12:00 AM stays 12:00, 13:00 PM
+becomes 25:00, "3:00 pm" and "9:00  PM" (two spaces) lose the PM, "9:5" keeps one minute
+digit, a three-digit year such as 131 is kept as is, and only the first letter of a name
+changes ("mcDonald" becomes "McDonald"). It also pins every exception: IndexError for a
+time without a colon, a date without three parts or an empty name; ValueError for a
+non-numeric hour; KeyError for an unknown room or a missing column. [Say whether the
+agent's first refactor passed every test, or which behavior it changed and how the
+failing test showed it.] The likely trap was "remove the repeated split calls": unpacking
+`month, d, year = day.split("/")` raises ValueError instead of IndexError and breaks a
+four-part date, and `.split()` without an argument fixes the double-space bug by accident.
+Before fixing a bug for real I would check which old rows hit it in the real export, and
+what the new backend's R3 and R5 say about the result (for example 24:15 is rejected
+by R3), then change the pinned test and the code in the same commit.
+
 ## 8. The agent team
 
 What did giving each agent one job and its own tools buy you? Name one thing that went

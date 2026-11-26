@@ -268,3 +268,31 @@ evidence:  R11, R7, R9, P4, D13, D19; evidence/review-r11.md; evidence/contract-
 risk:      the locked R7 test will also fail on a correct reference backend; the
            daily-limit count reads every booking on the date into Python, fine at
            library scale; D19 came after the code it describes.
+
+## Entry 11
+artifact:  commit 4399080, tests/legacy/test_old_format.py (35 characterization tests);
+           commit 05f74ba, refactored legacy/old_format.py (Part 10)
+tool:      Claude (claude.ai, Claude Opus 5.5) drafted the tests, 2026-11-26; Claude Code
+           with Claude Opus 5.5 (claude-opus-5-5), main agent, did the refactor,
+           2026-11-26 (not the test-writer: its rules forbid values from running code)
+prompts:   the HANDOUT Part 10 refactor prompt; prompts/10-legacy.txt
+review:    the tests pin what the code does today, right or wrong, with "# BUG: pinned,
+           not fixed" above each wrong result: 12 PM becomes 24, 12 AM stays 12, 13 PM
+           becomes 25, lowercase pm and a double space lose PM, 9:5 is not padded, a
+           three-digit year is kept, a fourth date part is ignored, only the first letter
+           of a name changes. Every exception is pinned with its class (IndexError,
+           ValueError, KeyError). I checked the values against python -m legacy.old_format
+           legacy/old_bookings.csv. The refactor: type hints and docstrings on both
+           functions, named constants, and day.split("/") and the clock split done once
+           and indexed, not unpacked, so a short or long date still raises or behaves as
+           before. [Say whether the first refactor attempt passed, or what it changed.]
+checks:    python -m pytest tests/legacy: 35 passed, before and after the refactor.
+           python tools/check.py, Legacy: 35 tests, pass on the refactored file, type
+           hints on every function: OK. Claude also checked: the 35 tests pass on the
+           original course file; they caught all of 20 copies of the original with one
+           behavior changed each (for example .capitalize(), .split() with no argument,
+           unpacking the date, fixing 12 PM); the original and the refactored file gave
+           the same result or exception on 120,000 random inputs.
+evidence:  tests/legacy/test_old_format.py; legacy/old_format.py; HANDOUT Part 10
+risk:      the pinned bugs are still bugs; before importing old bookings they must be
+           fixed on purpose, with the matching tests changed in the same commit.

@@ -1,0 +1,21 @@
+Tool: Claude (claude.ai, Claude Opus 5.5) drafted the characterization tests; Claude Code
+with Claude Opus 5.5 (claude-opus-5-5), main agent, did the refactor; 2026-11-26
+Change: Part 10: tests/legacy/test_old_format.py (4399080), then the refactor of
+legacy/old_format.py (05f74ba)
+
+Prompts typed, word for word, in order.
+[Check prompt 3 against what you typed into Claude Code, and add any retry prompts.]
+
+----- 1: to Claude (claude.ai), after the ADR -----
+all done. whats next
+
+----- 2: to Claude (claude.ai) -----
+done
+
+----- 3: to Claude Code, the refactor (HANDOUT Part 10, step 4) -----
+Refactor legacy/old_format.py for readability without changing what it does: add
+type hints to every function, give each function a docstring, remove the
+repeated split calls, and give the magic values names. Keep the function names
+to_24h and parse_old_row, and the same result or exception for every input,
+including the odd ones. Do not edit any test. Run python -m pytest tests/legacy
+and report the result.
