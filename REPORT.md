@@ -68,7 +68,14 @@ One row for every finding in `evidence/review.md` and `evidence/contract-check.m
 
 | # | Agent | Finding, in a few words | Fixed (commit SHA) or rejected (reason) |
 |---|---|---|---|
-| 1 | | | |
+| 1 | reviewer | D18 checks only the five spec fields, so "\ud800" in an ignored field still gets 201 | Rejected: R3 says fields not listed are ignored and D18 covers the fields R3 checks; the ignored field is never stored, so nothing fails |
+| 2 | reviewer | SQLite's 5-second busy timeout can turn a queued POST into a 500 "database is locked" | Fixed in a057cd9: connections wait up to 30 seconds for the write lock |
+| 3 | reviewer | FastAPI serves /docs, /redoc and /openapi.json, which section 4 does not list | Fixed in a057cd9: all three turned off in create_app |
+| 4 | reviewer | service.py docstring says D1 to D17, but D18 is implemented | Fixed in a057cd9 |
+| 5 | contract-checker | #19: the page handles daily_limit, the backend never sends it | Rejected: not in the spec (section 7, "Proposed, not built"); R11 adds it in Part 8 |
+| 6 | contract-checker | #20: the page handles a 404 from GET /api/rooms | Rejected: not in the spec; R1 defines only 200, and the page's branch is for when no backend runs |
+
+DRAFT note, check it: the three accepted findings were fixed in one commit, a057cd9, not one commit each as Part 7 step 3 asks. Every other row of the contract check (items 1 to 18 and 21) is a match.
 
 ## 5. The spec change (Part 8)
 

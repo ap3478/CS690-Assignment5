@@ -213,3 +213,27 @@ checks:    python tools/check_layers.py: "Layer check passed: L1 to L5 hold."
 evidence:  R1 to R10; D1, D2, D5, D13, D16; docs/plan.md Task 3; evidence/page.png
 risk:      the tests run through TestClient, not a real server with several workers;
            /docs, /redoc and /openapi.json are endpoints the spec does not list.
+
+## Entry 9
+artifact:  commit 2c0d9d7 (evidence/review.md, evidence/contract-check.md) and commit
+           a057cd9 (fixes for review findings 2, 3 and 4 in app/repository.py,
+           app/main.py, app/service.py); REPORT.md question 4
+tool:      Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent with the
+           reviewer and contract-checker subagents, 2026-11-25; Claude (claude.ai,
+           Claude Opus 5.5) suggested an answer for each finding
+prompts:   the HANDOUT Part 7 review prompt, then the fix prompts; prompts/07-reviews.txt
+review:    the reviewer found no blocking break of R1 to R10 or L1 to L5 and returned four
+           findings; the contract checker matched every request, field and section 6
+           code, with two mismatches, both on the page. Rejected: reviewer 1 (an unpaired
+           surrogate in an ignored field gets 201; R3 ignores unlisted fields and nothing
+           is stored), contract #19 (daily_limit, not in the spec until R11) and contract
+           #20 (404 from GET /api/rooms, not in the spec). Fixed: reviewer 2 (busy timeout
+           30 s, so queued bookings wait instead of a 500), 3 (docs endpoints off) and 4
+           (docstring). The three fixes went into one commit instead of one each.
+           [Add what you read yourself.]
+checks:    after a057cd9: python -m pytest: 247 passed; python tools/check_layers.py:
+           L1 to L5 hold; GET /docs, /redoc and /openapi.json give 404, GET / gives 200.
+evidence:  R3, R7, R9, R11 (proposed); D13, D18; evidence/review.md; evidence/contract-check.md
+risk:      the reviewers only read code and ran nothing; the busy-timeout fix is not
+           covered by a test; a cosmetic missing space remains in repository.py
+           (BOOKING_COLUMNS ='...').
