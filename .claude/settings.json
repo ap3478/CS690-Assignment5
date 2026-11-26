@@ -9,6 +9,7 @@
     ],
     "deny": [
       "Edit(/frontend/**)",
+      "Edit(/tests/acceptance/**)",
       "Bash(git push:*)",
       "Bash(rm -rf:*)"
     ]
