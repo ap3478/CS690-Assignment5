@@ -1,0 +1,16 @@
+Tool: Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-26
+Change: Part 8, step 3: R11 in app/ (commit 767023f), then D19 in docs/spec.md
+(5a4dcfa), a second review run (a9eb2c9) and docstring fixes (9596dac)
+
+Prompts typed into Claude Code, word for word, in order.
+[Check prompt 1 against what you typed, and paste the prompts for D19, the second review
+run and the docstring fix below it.]
+
+----- 1: implement R11 (HANDOUT Part 8, step 3) -----
+docs/spec.md now has rule R11 (daily limit), and
+tests/acceptance/test_r11_daily_limit.py tests it. Implement R11 and nothing
+else, following AGENTS.md. Run python tools/check_layers.py and
+python -m pytest, and report the results.
+
+----- 2 onward -----
+[paste here]

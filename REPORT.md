@@ -39,8 +39,12 @@ lock (tag a5-tests-locked). Two R9 order cases, r3_before_r5 and r3_before_r6, u
 `room_id: True` and `9.0`; the fix to use the strings "1" and "9" was missed and only
 found after the lock. They pass on a backend that follows D1, but a correct backend that
 coerces `true` to 1 or `9.0` to 9 reports a later rule, so they check something sections
-1 to 6 do not clearly fix. They stay as locked. [After Part 6: did any other locked test
-turn out to be wrong?]
+1 to 6 do not clearly fix. They stay as locked. After Part 8, one more locked test fails:
+test_r7_same_person_back_to_back_is_allowed (R7, P4) books the same person three times on
+one date. That was right for spec version 1, but R11 (version 2) limits a person to two
+bookings per date, so the third booking now correctly gets 409 daily_limit. The test is
+locked, so it stays failing; the code follows the spec and was not bent to pass it.
+python -m pytest: 254 passed, 1 failed.
 
 
 ## 3. The plan (Part 5)
@@ -74,6 +78,17 @@ One row for every finding in `evidence/review.md` and `evidence/contract-check.m
 | 4 | reviewer | service.py docstring says D1 to D17, but D18 is implemented | Fixed in a057cd9 |
 | 5 | contract-checker | #19: the page handles daily_limit, the backend never sends it | Rejected: not in the spec (section 7, "Proposed, not built"); R11 adds it in Part 8 |
 | 6 | contract-checker | #20: the page handles a 404 from GET /api/rooms | Rejected: not in the spec; R1 defines only 200, and the page's branch is for when no backend runs |
+
+After R11 both agents ran again (evidence/review-r11.md, evidence/contract-check-r11.md):
+
+| # | Agent | Finding, in a few words | Fixed (commit SHA) or rejected (reason) |
+|---|---|---|---|
+| 7 | reviewer (R11 run) | Overlap and daily-limit decisions run in repository.py, not service.py | Rejected: D13 needs the check and the save in one BEGIN IMMEDIATE transaction; the service supplies the policy (person_key, max_per_person) and maps the outcome to the error |
+| 8 | reviewer (R11 run) | "\ud800" in an ignored field still gets 201 | Rejected: same as finding 1 |
+| 9 | reviewer (R11 run) | A lock held over 30 s gives a plain 500 | Rejected: not in the spec; section 6 has no code for a server error |
+| 10 | reviewer (R11 run) | models.py docstring out of date after R11 | Fixed in 9596dac |
+| 11 | reviewer (R11 run) | service.py class docstring says R1 to R9 | Fixed in 9596dac |
+| 12 | contract-checker (R11 run) | #3: the page handles a 404 from GET /api/rooms | Rejected: not in the spec (same as finding 6) |
 
 DRAFT note, check it: the three accepted findings were fixed in one commit, a057cd9, not one commit each as Part 7 step 3 asks. Every other row of the contract check (items 1 to 18 and 21) is a match.
 

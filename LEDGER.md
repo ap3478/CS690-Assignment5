@@ -237,3 +237,34 @@ evidence:  R3, R7, R9, R11 (proposed); D13, D18; evidence/review.md; evidence/co
 risk:      the reviewers only read code and ran nothing; the busy-timeout fix is not
            covered by a test; a cosmetic missing space remains in repository.py
            (BOOKING_COLUMNS ='...').
+
+## Entry 10
+artifact:  R11 daily limit: commits 32eb55d (spec), 76ce428
+           (tests/acceptance/test_r11_daily_limit.py), 767023f (app/repository.py,
+           app/service.py), 5a4dcfa (spec D19), a9eb2c9 (second review run),
+           9596dac (docstrings)
+tool:      Claude Code with Claude Opus 5.5 (claude-opus-5-5), main agent, 2026-11-26;
+           the spec edits and the draft of the R11 tests by Claude (claude.ai, Claude
+           Opus 5.5)
+prompts:   the HANDOUT Part 8 code prompt and the follow-ups; prompts/08-r11-code.txt;
+           spec and test drafts in prompts/08a-r11-spec.txt
+review:    spec first (32eb55d, the HANDOUT text), then the test, which I put in
+           tests/acceptance/ myself: Claude drafted 8 tests and I checked each expected
+           value against R11; before the code, 2 failed with 201 instead of 409, 6 passed.
+           The code: the service supplies the policy (names trimmed and case folded,
+           at most 2) and the repository counts the person's bookings on that date inside
+           the same BEGIN IMMEDIATE transaction as the overlap check, after it (R9 order
+           R7 then R11, and D13 still holds). Names are compared in Python with
+           casefold(), not SQLite's ASCII-only lower(); I recorded that choice as D19,
+           but committed it after the code instead of before. The locked test
+           test_r7_same_person_back_to_back_is_allowed now fails: it books one person
+           three times on one date, which R11 forbids, so it stays failing (REPORT Q2).
+           [Add what you read yourself.]
+checks:    python tools/check.py: R11 in spec, the spec commit and the test commit both
+           before the code commit, 8 test_r11_ tests, 19 decisions: all OK.
+           python -m pytest: 254 passed, 1 failed (test_r7_same_person_back_to_back_is_allowed,
+           409 daily_limit instead of 201). python tools/check_layers.py: L1 to L5 hold.
+evidence:  R11, R7, R9, P4, D13, D19; evidence/review-r11.md; evidence/contract-check-r11.md
+risk:      the locked R7 test will also fail on a correct reference backend; the
+           daily-limit count reads every booking on the date into Python, fine at
+           library scale; D19 came after the code it describes.
