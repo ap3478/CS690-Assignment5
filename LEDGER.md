@@ -39,3 +39,19 @@ checks:    python tools/check.py: "AGENTS.md, Backend rules: 20 lines (at least 
            section is under the 30-line limit.
 evidence:  HANDOUT Part 1; RUBRIC B1; spec sections 3, R3 to R9
 risk:      
+## Entry 2
+artifact:  Part 3 clarify step: question list Q1 to Q22 (no files changed); decisions
+           go in docs/spec.md section 7, commit "Spec clarified"
+tool:      Claude (claude.ai cloud agent session), Claude Opus 5.5 (claude-opus-5-5), 2026-11-25; main agent, no subagent
+prompts:   the Part 3 clarify prompt from HANDOUT.md, word for word; prompts/03-clarify.txt
+review:    Claude listed 22 questions touching R2, R3, R4, R6, R7, R8, R9, R10 and
+           sections 3 and 6. Claude itself noted Q3, Q6 and Q14 may already be answered
+           by the spec. Q21 (the page handles daily_limit, which section 6 does not
+           define) goes under "Proposed, not built", not a decision.
+           (Update when section 7 is written: which questions the spec answers and
+           where, which became D1, D2, ..., and which I rejected.)
+checks:    confirmed no files changed (git status). (Update with python tools/check.py
+           decision count after section 7 is written.)
+evidence:  HANDOUT Part 3; RUBRIC D3b; spec section 7; rules R2 to R10
+risk:      decisions not yet written; the question list may miss open questions that
+           only show up while building or testing.
