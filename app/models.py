@@ -41,7 +41,8 @@ class Booking:
 class BookingRequest:
     """A POST /api/bookings body that has passed R3 to R6, with booked_by trimmed (R4).
 
-    Only the overlap check (R7) is left, done together with the save.
+    Only the overlap check (R7) and the daily limit (R11) are left, done together with
+    the save.
     """
 
     room_id: int

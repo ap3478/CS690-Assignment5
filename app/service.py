@@ -128,7 +128,7 @@ def _int_in_int64(value: str) -> int | None:
 
 
 class BookingService:
-    """Enforces R1 to R9. Talks to storage only through the repository."""
+    """Enforces R1 to R11. Talks to storage only through the repository."""
 
     def __init__(self, repo: Repository) -> None:
         self.repo = repo
