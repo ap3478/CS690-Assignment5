@@ -1,0 +1,76 @@
+Tool: Claude Code [version], main agent with the test-writer subagent, 2026-11-25
+Change: Part 4, acceptance tests in tests/acceptance/, written and fixed before the lock
+
+Prompts typed into Claude Code, word for word, in order.
+[Check prompt 1 against what you actually typed; prompts 2 and 3 were pasted as given.]
+
+----- 1: write the tests (HANDOUT Part 4, step 1) -----
+Use the test-writer subagent to write acceptance tests for rules R1 to R10 of
+docs/spec.md, in tests/acceptance/. There is no backend yet, so do not run the
+code to find expected values. Report the tests by rule.
+
+----- 2: fix list after review (see prompts/04a-test-review.txt) -----
+Use the test-writer subagent to fix tests/acceptance/ before the lock. Some tests check
+my decisions in docs/spec.md section 7 instead of sections 1 to 6, so a correct backend
+that decided those questions differently would fail them. Keep only what sections 1 to 6
+fix. Make exactly these changes and nothing else:
+
+test_r2_list.py
+- Delete test_r2_room_id_with_leading_zero_is_an_integer.
+- Delete test_r2_date_is_checked_before_room_id.
+- Delete the four "last value" tests: test_r2_room_id_last_value_is_used,
+  test_r2_repeated_room_id_with_bad_last_value_is_invalid_request,
+  test_r2_date_last_value_is_used, test_r2_repeated_date_with_bad_last_value_is_invalid_request.
+- In test_r2_badly_formatted_date_is_invalid_request, remove the fullwidth-digit case.
+- In test_r2_impossible_date_is_invalid_request, remove "0000-01-01".
+- In test_r2_room_id_not_an_integer_is_invalid_request, keep only "abc", "1.0", "1e0",
+  "true", "one".
+- In test_r2_unknown_room_is_room_not_found, remove the very large number.
+
+test_r3_shape.py
+- Delete test_r3_content_type_is_not_checked, test_r3_duplicate_key_uses_last_value,
+  test_r3_non_rfc8259_number_is_invalid_request, test_r3_body_not_utf8_is_invalid_request,
+  and test_r3_room_id_with_decimal_point_or_exponent_is_invalid_request.
+- In test_r3_room_id_not_an_integer_is_invalid_request, remove 1.0.
+- In test_r3_badly_formatted_date_is_invalid_request, remove the fullwidth-digit case.
+- In test_r3_impossible_date_is_invalid_request, remove "0000-01-01".
+- In BAD_TIMES, remove the fullwidth-digit case.
+
+test_r6_room.py
+- In test_r6_unknown_room_is_room_not_found, remove 10**30.
+
+test_r7_overlap.py
+- Delete test_r7_simultaneous_overlapping_requests_create_one_booking and the now unused
+  ThreadPoolExecutor import.
+
+test_r8_cancel.py
+- Delete test_r8_id_with_leading_zero_is_an_integer, test_r8_ids_are_not_reused_after_cancel
+  and test_r8_ids_are_not_reused_after_restart.
+- In test_r8_integer_matching_no_booking_is_booking_not_found, keep only "0" and "-1".
+- In test_r8_id_not_an_integer_is_invalid_request, keep only "abc", "1.0", "1e0", "true".
+
+test_r9_errors.py
+- In CASES, change r3_before_r5 to use "room_id": "1" instead of True, and r3_before_r6
+  to use "room_id": "9" instead of 9.0.
+
+Do not change any other test. Then run python tools/check.py tests and report the counts
+per rule and how many tests pass (it must be 0).
+
+----- 3: follow-up, the R6, R7 and R8 fixes were not applied (257 tests, not 247) -----
+Use the test-writer subagent to finish the fixes in tests/acceptance/. These were not
+applied:
+
+test_r6_room.py
+- In test_r6_unknown_room_is_room_not_found, remove 10**30 from the parameters.
+
+test_r7_overlap.py
+- Delete test_r7_simultaneous_overlapping_requests_create_one_booking and the now unused
+  ThreadPoolExecutor import.
+
+test_r8_cancel.py
+- Delete test_r8_id_with_leading_zero_is_an_integer, test_r8_ids_are_not_reused_after_cancel
+  and test_r8_ids_are_not_reused_after_restart.
+- In test_r8_integer_matching_no_booking_is_booking_not_found, keep only "0" and "-1".
+- In test_r8_id_not_an_integer_is_invalid_request, keep only "abc", "1.0", "1e0", "true".
+
+Do not change any other file. Then run python tools/check.py tests and report the counts.
