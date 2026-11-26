@@ -2,7 +2,7 @@ Tool: Claude Code [version], main agent in plan mode, 2026-11-25
 Change: Part 5, docs/plan.md (Task 1, Task 2, Task 3, Not in this change)
 
 Prompts typed into Claude Code, word for word, in order.
-[Check against what you actually typed; delete prompt 2 if you did not send it.]
+[Check against what you actually typed.]
 
 ----- 1: ask for the plan (HANDOUT Part 5, step 2), in plan mode -----
 Plan the backend for docs/spec.md, rules R1 to R10, in three tasks: Task 1,
@@ -12,18 +12,6 @@ app/routes.py and app/main.py. For each task, list the files it creates and what
 section called "Not in this change". The tests in tests/acceptance/ must pass
 without being edited, and nothing in frontend/ changes.
 
------ 2: revise the plan after review, in plan mode -----
-Revise the plan:
-1. Every format check (date, time, room_id, booking id) uses re.fullmatch, not ^...$,
-   so a value with a trailing newline such as "2031-03-14\n" or "1\n" is rejected.
-2. The repository is a class, Repository(db_path), in Task 1; remove the
-   "or module functions" option.
-3. The service checks room_id against the ids returned by repo.list_rooms() instead
-   of a hard-coded 1 to 4, so no integer ever reaches SQLite in a room check.
-4. Repository connections use isolation_level=None so create_booking_if_free can run
-   BEGIN IMMEDIATE ... COMMIT itself, with ROLLBACK on overlap or error.
-Change nothing else.
-
------ 3: save the plan, after leaving plan mode -----
+----- 2: save the plan, after leaving plan mode -----
 Write the approved plan to docs/plan.md with the headings ## Task 1, ## Task 2,
 ## Task 3 and ## Not in this change. Do not create or change any other file.

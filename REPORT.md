@@ -47,6 +47,20 @@ turn out to be wrong?]
 
 What did you reject from the plan, or add to "Not in this change", and why?
 
+DRAFT: check every sentence against what you did.
+
+I approved the plan without asking the agent to revise it (prompts/05-plan.txt). Its
+"Not in this change" already excluded what the spec does not ask for: R11 and
+daily_limit, the R9 error body for unknown paths and wrong methods (spec section 7,
+"Proposed, not built"), pydantic request models, new packages, an ORM, login, capacity
+and past-date checks, CORS, and any edit to frontend/ or tests/acceptance/, so I had
+nothing outside the spec to reject. Reading it against the spec, I found one gap I did
+not send back: the format checks use `^...$` regexes, and in Python `$` also matches
+before a final newline, so "2031-03-14\n" or "1\n" would pass R2 and R3. [Say how you
+handled it: told the agent in Task 2, or left it for the reviewer in Part 7.] The plan
+also builds D13 in Task 1 (`create_booking_if_free` with `BEGIN IMMEDIATE`), so the ADR in
+Part 9 records a decision already in the code.
+
 ## 4. Review findings (Part 7)
 
 One row for every finding in `evidence/review.md` and `evidence/contract-check.md`.
