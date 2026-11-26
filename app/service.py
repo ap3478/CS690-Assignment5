@@ -1,4 +1,4 @@
-"""The rules of RoomBook (spec section 5, with decisions D1 to D17).
+"""The rules of RoomBook (spec section 5, with decisions D1 to D18).
 
 Every check is done here by hand. Nothing is saved until every check has passed, so
 a request that fails changes nothing (R9).

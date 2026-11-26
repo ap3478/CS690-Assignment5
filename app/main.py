@@ -24,7 +24,8 @@ def create_app(db_path: str = "roombook.db") -> FastAPI:
     repo.init_db()
     service = BookingService(repo)
 
-    app = FastAPI(title="RoomBook")
+    # No /docs, /redoc or /openapi.json: the spec defines no such routes.
+    app = FastAPI(title="RoomBook", docs_url=None, redoc_url=None, openapi_url=None)
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(request: Request, exc: RequestValidationError) -> JSONResponse:

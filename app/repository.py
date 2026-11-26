@@ -17,7 +17,9 @@ ROOMS = [
     (4, "Group Room D", 8),
 ]
 
-BOOKING_COLUMNS = 'id, room_id, date, "start", "end", booked_by'
+BUSY_TIMEOUT_SECONDS = 30.0
+
+BOOKING_COLUMNS ='id, room_id, date, "start", "end", booked_by'
 
 
 class Repository:
@@ -28,7 +30,9 @@ class Repository:
 
     def _connect(self) -> sqlite3.Connection:
         # isolation_level=None: autocommit, so this class runs its own transactions.
-        conn = sqlite3.connect(self.db_path, isolation_level=None)
+        # timeout: how long to wait for another request's write lock (BEGIN IMMEDIATE)
+        # before giving up, longer than the 5-second default so bursts of bookings queue.
+        conn = sqlite3.connect(self.db_path, isolation_level=None, timeout=BUSY_TIMEOUT_SECONDS)
         conn.row_factory = sqlite3.Row
         return conn
 
