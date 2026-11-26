@@ -1,0 +1,31 @@
+I compared all three sides by reading the code only; I did not run the server or the tests. The page and the backend match on every request, every response field they share, and every error code in spec section 6. There are two mismatches, and both are on the page: it handles a `daily_limit` code and a 404 from `GET /api/rooms`, and the spec defines neither. The spec says the backend is right in both cases, and neither should be built.
+
+Files: `/Users/ga/cs690/cs690-assignment5/frontend/app.js` (P), `/Users/ga/cs690/cs690-assignment5/docs/spec.md` (S), `/Users/ga/cs690/cs690-assignment5/app/routes.py` (R), `/Users/ga/cs690/cs690-assignment5/app/main.py` (M), with `/Users/ga/cs690/cs690-assignment5/app/service.py` (Sv), `/Users/ga/cs690/cs690-assignment5/app/repository.py` (Rp) and `/Users/ga/cs690/cs690-assignment5/app/models.py` (Md) for detail.
+
+| # | Item | What the page does | What the spec says | What the backend does | Match or mismatch |
+|---|---|---|---|---|---|
+| 1 | Page files `/`, `/app.js`, `/styles.css` | `index.html` loads `app.js` by a relative path (index.html:47) | §3 and D16: serve the three files as HTML, JavaScript and CSS | M:40-50 serves each file with `text/html`, `text/javascript` and `text/css` | Match |
+| 2 | `GET /api/rooms` request | P:161, no query or body | §4 and R1: 200 with a list of rooms ordered by id | R:37-40, with Rp:70 `ORDER BY id` | Match |
+| 3 | Room fields read | `id`, `name`, `capacity` (P:111, 114, 173-174) | §4: a room has exactly `id`, `name`, `capacity` | Md:14-16 returns exactly these; Rp:13-18 seeds the four rooms from §2 | Match |
+| 4 | `GET /api/bookings?date=` request | P:148 sends `date` as a `YYYY-MM-DD` string from `<input type="date">`; an empty date sends `date=` | R2, D3, D4, D5, D7: `date` is required and must be a real day, otherwise 422 `invalid_request`; an empty value is invalid | R:42-49 uses the last value (D5); Sv:141-142 rejects a missing, empty or badly formatted date with `invalid_request` | Match |
+| 5 | `room_id` query parameter | Never sent | R2: optional | Supported (Sv:144-150) | Match (the page not sending an optional parameter is not a conflict) |
+| 6 | `POST /api/bookings` body | P:183-191 sends `room_id` as a number (`Number(...)`), `date`, `start` and `end` as strings, `booked_by` as a string, with `Content-Type: application/json` | §4, R3, D1, D9: the same five fields and types; Content-Type is not checked | R:51-58 reads the raw bytes; Sv:160-182 validates by hand with no type coercion | Match |
+| 7 | Time choices offered | Start 08:00 to 21:30, end 08:30 to 22:00, in 30-minute steps (P:158-159) | R5: 30-minute steps, start at or after 08:00, end at or before 22:00, at most 3 hours | Sv:189-199 | Match (choices beyond 3 hours or with start not before end are rejected by the backend, as §1 intends) |
+| 8 | POST success response | Expects 201 and reads `booking.start`, `.end`, `.booked_by` (P:191-192) | §4: 201 with the booking (six fields); R4: the stored name is trimmed | R:58 returns status 201 with `Md.to_dict` (six fields); Sv:185 trims the name | Match |
+| 9 | Booking list fields read | `id`, `room_id` (compared with `===` to `room.id`), `start`, `end`, `booked_by` (P:119, 129, 135) | §4: a booking has exactly six fields, with integer `room_id` and `id`; ordered by `room_id` then `start` | Md:30-37; Rp:80 orders by `room_id, "start"`; `room_id` is an integer, so `===` works | Match |
+| 10 | `DELETE /api/bookings/{id}` | P:203 uses the integer `id` from the list | R8 and D2: 204 with an empty body; 404 `booking_not_found`; a non-integer id gives 422 `invalid_request` | R:60-66 returns `Response(status_code=204)`; Sv:214-220 | Match |
+| 11 | 204 handling | P:42-44 returns `null` without reading a body | §4: a 204 has an empty body | R:66 sends an empty body | Match |
+| 12 | Error body shape | P:52-53 reads `data.error` and `data.message` as strings | R9: exactly `{"error","message"}` | R:19-21; M:29-35 also turns FastAPI's 422 into `invalid_request` | Match |
+| 13 | `invalid_request` (422) | MESSAGES P:16, and it appends the server `message` (P:62-64) | §6: R2, R3, R8; D15: `message` is plain English | Sv:34, 42; messages are plain sentences | Match |
+| 14 | `invalid_name` (422) | P:17, "40 characters at most" | R4: 1 to 40 characters after trimming | Sv:35, 186-187 | Match |
+| 15 | `invalid_time` (422) | P:18, which describes the R5 conditions | R5 | Sv:36, 191-199 | Match |
+| 16 | `room_not_found` (404) | P:19 | §6: R2, R6 | Sv:37, 149, 202-203 | Match |
+| 17 | `booking_not_found` (404) | P:20, "That booking was already cancelled." | §6: R8 | Sv:38, 219-220 | Match |
+| 18 | `overlap` (409) | P:21 | §6: R7; D13: the check and save are one step | Sv:39, 208-209; Rp:85-115 does both in one `BEGIN IMMEDIATE` transaction | Match |
+| 19 | `daily_limit` | P:22, "You already have 2 bookings on that day..." | Not in the spec: no rule and not in §6. Section 7 "Proposed, not built" (spec.md:186) says the backend never sends it | Never sends it; not in Sv:33-48 | **Mismatch** |
+| 20 | 404 from `GET /api/rooms` | P:163-164 says "The backend is not built yet." | Not in the spec: R1 defines only a 200, and §6 has no 404 for this route | R:37-40 always returns 200; there is no error path | **Mismatch** |
+| 21 | Any other status or code | P:68 falls back to "The server answered N: message"; P:70 handles a network error | Not a defined code. Unknown paths and wrong methods keep FastAPI's defaults (spec.md:187) | FastAPI defaults for unknown paths and methods; every `/api/*` error uses a code from §6 | Match (a general fallback, not tied to any code) |
+
+**Mismatches**
+- #19 `daily_limit`: the page differs (frontend/app.js:22). The spec (spec.md:140-149, 186) and the backend (app/service.py:33-48) agree there is no such code. The spec sides with the backend. This is not in the spec, so it should not be built.
+- #20 404 from `GET /api/rooms`: the page differs (frontend/app.js:163-164). The spec (spec.md:74, 88-89) and the backend (app/routes.py:37-40) define only a 200. The spec sides with the backend. This is not in the spec. The branch only matters when the backend is missing, so it never runs against the current backend.
